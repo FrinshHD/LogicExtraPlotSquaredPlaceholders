@@ -1,8 +1,0 @@
-name: LogicExtraPlotSquaredPlaceholders
-version: '0.0.1'
-main: net.anturnia.logicExtraPlotSquaredPlaceholders.Main
-api-version: '1.20'
-author: "FrinshHD"
-depend:
-  - PlotSquared
-  - PlaceholderAPI

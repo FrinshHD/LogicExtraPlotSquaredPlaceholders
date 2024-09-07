@@ -28,10 +28,12 @@ public class PapiExpansion extends PlaceholderExpansion {
         String plotsquaredPlot = "plotsquared_plot_";
 
         if (params.startsWith(plotsquaredPlot)) {
-            String owner = params.substring(plotsquaredPlot.length());
-            owner = owner.split("_")[0];
+            String rest = params.substring(plotsquaredPlot.length());
+            String onlinePlayers = "_online_players";
 
-            String end = params.substring(plotsquaredPlot.length()).substring(owner.length());
+            String owner = rest.substring(0, rest.length() - onlinePlayers.length());
+
+            String end = rest.substring(rest.length() - onlinePlayers.length());
 
             if (end.equals("_online_players")) {
                 if (!Main.plotPlayers.containsKey(owner)) {

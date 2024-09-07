@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public final class Main extends JavaPlugin implements Listener {
@@ -45,32 +46,31 @@ public final class Main extends JavaPlugin implements Listener {
         PlotPlayer<?> plotPlayer = event.getPlotPlayer();
         OfflinePlayer plotOwner = Bukkit.getOfflinePlayer(Objects.requireNonNull(event.getPlot().getOwner()));
 
-        if (!plotPlayers.containsKey(plotOwner.getName())) {
-            plotPlayers.put(plotOwner.getName(), new ArrayList<>());
+        if (!plotPlayers.containsKey(Objects.requireNonNull(plotOwner.getName()).toLowerCase())) {
+            plotPlayers.put(plotOwner.getName().toLowerCase(), new ArrayList<>());
         }
 
-        plotPlayers.get(plotOwner.getName()).add(plotPlayer.getUUID());
+        ArrayList<UUID> players = new ArrayList<>(plotPlayers.get(plotOwner.getName().toLowerCase()));
+        players.add(plotPlayer.getUUID());
+        plotPlayers.put(plotOwner.getName().toLowerCase(), players);
     }
 
     @Subscribe
     public void onPlotLeaveEvent(PlayerLeavePlotEvent event) {
         PlotPlayer<?> plotPlayer = event.getPlotPlayer();
-        UUID plotOwnerUUID = event.getPlot().getOwner();
 
-        if (plotOwnerUUID == null) {
+        OfflinePlayer plotOwner = Bukkit.getOfflinePlayer(Objects.requireNonNull(event.getPlot().getOwner()));
+
+        if (!plotPlayers.containsKey(Objects.requireNonNull(plotOwner.getName()).toLowerCase())) {
             return;
         }
 
-        OfflinePlayer plotOwner = Bukkit.getOfflinePlayer(plotOwnerUUID);
+        ArrayList<UUID> players = new ArrayList<>(plotPlayers.get(plotOwner.getName().toLowerCase()));
+        players.remove(plotPlayer.getUUID());
+        plotPlayers.put(plotOwner.getName().toLowerCase(), players);
 
-        if (!plotPlayers.containsKey(plotOwner.getName())) {
-            return;
-        }
-
-        plotPlayers.get(plotOwner.getName()).remove(plotPlayer.getUUID());
-
-        if (plotPlayers.get(plotOwner.getName()).isEmpty()) {
-            plotPlayers.remove(plotOwner.getName());
+        if (plotPlayers.get(plotOwner.getName().toLowerCase()).isEmpty()) {
+            plotPlayers.remove(plotOwner.getName().toLowerCase());
         }
     }
 

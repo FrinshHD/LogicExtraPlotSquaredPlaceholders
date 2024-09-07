@@ -32,10 +32,11 @@ public class PapiExpansion extends PlaceholderExpansion {
             String onlinePlayers = "_online_players";
 
             String owner = rest.substring(0, rest.length() - onlinePlayers.length());
+            owner = owner.toLowerCase();
 
-            String end = rest.substring(rest.length() - onlinePlayers.length());
+            String end = rest.substring(owner.length());
 
-            if (end.equals("_online_players")) {
+            if (end.equals(onlinePlayers)) {
                 if (!Main.plotPlayers.containsKey(owner)) {
                     return String.valueOf(0);
                 }
